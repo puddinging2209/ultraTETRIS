@@ -272,7 +272,7 @@ const draw_playscreen = (draw_ghost) => {
 
 	if (KONAMImode !== 9) {
 		// ゴーストの描画
-		if (draw_ghost) {
+		if (dropping_block.length !== 0 ? false : draw_ghost) {
 			let ghost_positionY = 0;
 			while (can_move(0, ghost_positionY, nowmino)) {
 				ghost_positionY++;
@@ -847,7 +847,7 @@ function rotate_right() {
 			break;
 	}
 
-	if (!can_move(0, 2, nowmino) && cannotmove_counter < 20) {
+	if (!can_move(0, 2, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
 		clearInterval(loop);
 		loop = setInterval(drop_mino, dropping_speed);
 		cannotmove_counter++;
@@ -876,7 +876,7 @@ function rotate_left() {
 			break;
 	}
 
-	if (!can_move(0, 2, nowmino) && cannotmove_counter < 20) {
+	if (!can_move(0, 2, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
 		clearInterval(loop);
 		loop = setInterval(drop_mino, dropping_speed);
 		cannotmove_counter++;
@@ -912,7 +912,7 @@ document.onkeydown = (e) => {
 							Tspin_chance = false;
 						}
 
-						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20) {
+						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
 							clearInterval(loop);
 							loop = setInterval(drop_mino, dropping_speed);
 							cannotmove_counter++;
@@ -928,7 +928,7 @@ document.onkeydown = (e) => {
 							Tspin_chance = false;
 						}
 
-						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20) {
+						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
 							clearInterval(loop);
 							loop = setInterval(drop_mino, dropping_speed);
 							cannotmove_counter++;
@@ -942,7 +942,7 @@ document.onkeydown = (e) => {
 							mino_distanceY++;
 							score = score + 3;
 
-							if (!can_move(0, 2, nowmino) && cannotmove_counter < 20) {
+							if (!can_move(0, 2, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
 								clearInterval(loop);
 								loop = setInterval(drop_mino, dropping_speed);
 								cannotmove_counter++;
@@ -961,6 +961,7 @@ document.onkeydown = (e) => {
 						break;
 
 					case 'Space':
+						if (dropping_block.length !== 0) break;
 						while (can_move(0, 1, nowmino)) {
 							mino_distanceY++;
 							score = score + 8;
@@ -1352,7 +1353,7 @@ const init = () => {
 		repop();
 		loop = setInterval(drop_mino, dropping_speed);
 		create_mino_position();
-		draw_playscreen(KONAMImode !== 8 || dropping_block.length === 0);
+		draw_playscreen(dropping_block.length !== 0);
 	}
 };
 
