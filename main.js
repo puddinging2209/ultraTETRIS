@@ -323,27 +323,27 @@ const draw_playscreen = (draw_ghost) => {
 			}
 			y++;
 		}
+	}
 
-		// NEXTミノを描画
-		let counter = 0;
-		while (counter < nexts.length) {
-			y = 0;
-			while (y < max_size) {
-				x = 0;
-				while (x < max_size) {
-					if (nexts[counter][y][x] === 1) {
-						if (KONAMImode !== 8) {
-							draw_block($hold_2d, x, (counter + 1) * 4 + y + 2, nexts[counter][4]);
-						} else {
-							draw_block($hold_2d, x, (counter + 1) * 4 + y + 2, nextsColors[counter][y][x]);
-						}
+	// NEXTミノを描画
+	let counter = 0;
+	while (counter < nexts.length) {
+		y = 0;
+		while (y < max_size) {
+			x = 0;
+			while (x < max_size) {
+				if (nexts[counter][y][x] === 1) {
+					if (KONAMImode !== 8) {
+						draw_block($hold_2d, x, (counter + 1) * 4 + y + 2, nexts[counter][4]);
+					} else {
+						draw_block($hold_2d, x, (counter + 1) * 4 + y + 2, nextsColors[counter][y][x]);
 					}
-					x++;
 				}
-				y++;
+				x++;
 			}
-			counter++;
+			y++;
 		}
+		counter++;
 	}
 
 	// ぷよ描画
@@ -782,6 +782,16 @@ const SRScheck = (SRS_list) => {
 	}
 };
 
+// 1: ミノ統一
+// 2: せりあがる壁
+// 3: 強制btob
+// 4: ミノ透明化
+// 5: ランダムミノ
+// 6: 自動回転
+// 7: ミノ変化
+// 8: ぷよぷよ
+// 9: 音ゲー(未完成)
+
 // KONAMIモード移行
 async function KONAMIchange() {
 	score = 0;
@@ -1179,7 +1189,7 @@ const drop_mino = () => {
 					break;
 				case 7:
 					const magic_number = Math.floor(Math.random() * 6) + 1;
-					const magiced_number = nowmino_number + magic_number < 7 ? nowmino_number + magic_number : nowmino_number + magic_number - 7;
+					const magiced_number = (nowmino_number + magic_number) % 7;
 					moved_mino = minos[magiced_number];
 					for (let i = 0; i < mino_direction; i++) {
 						moved_mino = right_rotated(moved_mino, magiced_number);
@@ -1234,6 +1244,7 @@ const drop_mino = () => {
 	} else {
 		const dealing_puyos = dropping_block.splice(0);
 		const numofdrops = dealing_puyos.length;
+		let cleared = false;
 		for (let i = 0; i < numofdrops; i++) {
 			const dealing = dealing_puyos[i];
 			const X = dealing.x;
@@ -1262,6 +1273,7 @@ const drop_mino = () => {
 					});
 					puyogroups.splice(index, 1);
 					clearedline++;
+					cleared = true;
 				}
 			});
 
@@ -1277,6 +1289,8 @@ const drop_mino = () => {
 					}
 				}
 			}
+
+			if (cleared) ren++;
 
 			if (dropping_block.length === 0) {
 				repopping();
@@ -1338,7 +1352,7 @@ const init = () => {
 		repop();
 		loop = setInterval(drop_mino, dropping_speed);
 		create_mino_position();
-		draw_playscreen(true);
+		draw_playscreen(KONAMImode !== 8 || dropping_block.length === 0);
 	}
 };
 
