@@ -1123,7 +1123,7 @@ function repopping() {
 		gameover = true;
 		clearInterval(loop);
 		if (highscore < score && !KONAMImode) {
-			localStorage.setItem('highscore', parseInt(score));
+			localStorage.setItem('highscore', score);
 			highscore = score;
 		}
 	}
