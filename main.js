@@ -1275,7 +1275,7 @@ const drop_mino = () => {
 						block_color[element.y][element.x] = null;
 					});
 					const clearedPuyo = puyogroups.splice(index, 1);
-					score += 200 + (clearedPuyo[0].pos.length - 4) * 100;
+					score += 200 + (clearedPuyo[0].pos.length - 4 + ren) * 50;
 					clearedline++;
 					cleared = true;
 				}
