@@ -798,8 +798,7 @@ async function KONAMIchange() {
 
 	const input = new URL(document.location.href).searchParams.get('KONAMI');
 
-	KONAMImode = input ?? Math.floor(Math.random() * 8) + 1;
-	// KONAMImode = 9;
+	KONAMImode = Number(input) ?? Math.floor(Math.random() * 8) + 1;
 	// 9は未完成
 
 	switch (KONAMImode) {
