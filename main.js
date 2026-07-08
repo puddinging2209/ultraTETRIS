@@ -914,6 +914,8 @@ document.onkeydown = (e) => {
 
 						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
 							cannotmove_counter++;
+							clearTimeout(loop);
+							loop = setTimeout(drop_mino, KONAMImode !== 9 ? dropping_speed : (15 / BPM) * 1000);
 						} else {
 							cannotmove_counter = 0;
 						}
@@ -928,6 +930,8 @@ document.onkeydown = (e) => {
 
 						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
 							cannotmove_counter++;
+							clearTimeout(loop);
+							loop = setTimeout(drop_mino, KONAMImode !== 9 ? dropping_speed : (15 / BPM) * 1000);
 						} else {
 							cannotmove_counter = 0;
 						}
@@ -938,20 +942,35 @@ document.onkeydown = (e) => {
 							mino_distanceY++;
 							score = score + 3;
 
-							if (!can_move(0, 2, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
-								cannotmove_counter++;
-							} else {
-								cannotmove_counter = 0;
-							}
+							cannotmove_counter = 0;
+
+							clearTimeout(loop);
+							loop = setTimeout(drop_mino, KONAMImode !== 9 ? dropping_speed : (15 / BPM) * 1000);
 						}
 						break;
 
 					case 'ArrowUp':
 						rotate_right();
+
+						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
+							cannotmove_counter++;
+							clearTimeout(loop);
+							loop = setTimeout(drop_mino, KONAMImode !== 9 ? dropping_speed : (15 / BPM) * 1000);
+						} else {
+							cannotmove_counter = 0;
+						}
 						break;
 
 					case 'KeyZ':
 						rotate_left();
+
+						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
+							cannotmove_counter++;
+							clearTimeout(loop);
+							loop = setTimeout(drop_mino, KONAMImode !== 9 ? dropping_speed : (15 / BPM) * 1000);
+						} else {
+							cannotmove_counter = 0;
+						}
 						break;
 
 					case 'Space':
@@ -977,12 +996,9 @@ document.onkeydown = (e) => {
 
 							holdOK = false;
 							nowmino_number = KONAMImode !== 5 ? minos.findIndex((item) => item === nowmino) : 9;
-
-							if (!can_move(0, 2, nowmino) && cannotmove_counter < 20) {
-								cannotmove_counter++;
-							} else {
-								cannotmove_counter = 0;
-							}
+							clearTimeout(loop);
+							loop = setTimeout(drop_mino, KONAMImode !== 9 ? dropping_speed : (15 / BPM) * 1000);
+							cannotmove_counter = 0;
 						}
 						break;
 				}
