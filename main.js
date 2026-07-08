@@ -1262,7 +1262,8 @@ const drop_mino = () => {
 			}
 		}
 
-		if (dropping_block.length === 0 || KONAMImode !== 9) {
+		console.log(dropping_block);
+		if (dropping_block.length === 0 && KONAMImode !== 9) {
 			make_puyogroups();
 
 			justdroppuyo.splice(0);
@@ -1273,7 +1274,8 @@ const drop_mino = () => {
 						screen[element.y][element.x] = 0;
 						block_color[element.y][element.x] = null;
 					});
-					puyogroups.splice(index, 1);
+					const clearedPuyo = puyogroups.splice(index, 1);
+					score += 200 + (clearedPuyo[0].pos.length - 4) * 100;
 					clearedline++;
 					cleared = true;
 				}
