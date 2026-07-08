@@ -1244,6 +1244,7 @@ const drop_mino = () => {
 			}
 		}
 	} else {
+		console.log(puyogroups);
 		const dealing_puyos = dropping_block.splice(0);
 		const numofdrops = dealing_puyos.length;
 		let cleared = false;
@@ -1262,13 +1263,27 @@ const drop_mino = () => {
 			}
 		}
 
-		console.log(dropping_block);
 		if (dropping_block.length === 0 && KONAMImode !== 9) {
 			make_puyogroups();
 
 			justdroppuyo.splice(0);
 
+			puyogroups.forEach((group) => {
+				const newP = new Set(group.pos.map((p) => `${p.x},${p.y}`));
+				group.pos = [...newP].map((p) => {
+					const [x, y] = p.split(',').map(Number);
+					return { x, y };
+				});
+			});
+
 			puyogroups.forEach((group, index) => {
+				for (const i in group) {
+					const g = group[i];
+					if (JSON.stringify(group.pos) === JSON.stringify(g.pos)) {
+						puyogroups.splice(index, 1);
+						return;
+					}
+				}
 				if (group.pos.length >= 4) {
 					group.pos.forEach((element) => {
 						screen[element.y][element.x] = 0;
