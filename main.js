@@ -718,14 +718,14 @@ function humen_master(humen) {
 	const audio = document.getElementById('BGM');
 	audio.src = `./scores/${humen.wave}`;
 
-	loop = setTimeout(drop_mino, (15 / BPM) * 1000);
+	drop_mino();
 
 	if (humen.offset > 0) {
 		audio.play();
-		loop = setTimeout(() => run_score(humen, measure), (humen.offset - 270 / BPM) * 1000);
+		setTimeout(() => run_score(humen, measure), (humen.offset - 270 / BPM) * 1000);
 	} else {
 		run_score(humen, measure);
-		loop = setTimeout(() => audio.play(), (humen.offset + 270 / BPM) * 1000);
+		setTimeout(() => audio.play(), (humen.offset + 270 / BPM) * 1000);
 	}
 }
 
@@ -795,8 +795,11 @@ const SRScheck = (SRS_list) => {
 // KONAMIモード移行
 async function KONAMIchange() {
 	score = 0;
-	KONAMImode = Math.floor(Math.random() * 8) + 1;
-	KONAMImode = 9;
+
+	const input = new URL(document.location.href).searchParams.get('KONAMI');
+
+	KONAMImode = input ?? Math.floor(Math.random() * 8) + 1;
+	// KONAMImode = 9;
 	// 9は未完成
 
 	switch (KONAMImode) {
@@ -1310,7 +1313,7 @@ const drop_mino = () => {
 	} else {
 		draw_playscreen(false);
 	}
-	if (!gameover) loop = setTimeout(drop_mino, dropping_speed);
+	if (!gameover) loop = setTimeout(drop_mino, KONAMImode !== 9 ? dropping_speed : (15 / BPM) * 1000);
 };
 
 // 初期化
