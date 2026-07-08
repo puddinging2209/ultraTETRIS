@@ -796,6 +796,7 @@ const SRScheck = (SRS_list) => {
 async function KONAMIchange() {
 	score = 0;
 	KONAMImode = Math.floor(Math.random() * 8) + 1;
+	KONAMImode = 8;
 	// 9は未完成
 
 	switch (KONAMImode) {
@@ -1296,6 +1297,10 @@ const drop_mino = () => {
 			if (dropping_block.length === 0) {
 				repopping();
 				ren = 0;
+
+				dropping_speed = Math.max(100, 500 - clearedline * 10);
+				clearInterval(loop);
+				loop = setInterval(drop_mino, dropping_speed);
 			}
 		}
 	}
