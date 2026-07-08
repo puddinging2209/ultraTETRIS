@@ -796,6 +796,7 @@ const SRScheck = (SRS_list) => {
 async function KONAMIchange() {
 	score = 0;
 	KONAMImode = Math.floor(Math.random() * 8) + 1;
+	KONAMImode = 9;
 	// 9は未完成
 
 	switch (KONAMImode) {
@@ -886,7 +887,7 @@ document.onkeydown = (e) => {
 	if (pause) {
 		if (e.code === 'KeyC') {
 			pause = false;
-			dropping_mino();
+			drop_mino();
 		}
 	} else {
 		if (gameover && e.code === 'Enter') {
