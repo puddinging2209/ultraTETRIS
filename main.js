@@ -833,20 +833,20 @@ async function KONAMIchange() {
 
 function rotate_right() {
 	moved_mino = right_rotated(nowmino);
-	switch (true) {
-		case moved_direction === 0:
+	switch (moved_direction) {
+		case 0:
 			SRScheck(nowmino_number !== 5 ? from3to0 : I_from3to0);
 			break;
 
-		case moved_direction === 1:
+		case 1:
 			SRScheck(nowmino_number !== 5 ? to1 : I_from0to1);
 			break;
 
-		case moved_direction === 2:
+		case 2:
 			SRScheck(nowmino_number !== 5 ? from1to2 : I_from1to2);
 			break;
 
-		case moved_direction === 3:
+		case 3:
 			SRScheck(nowmino_number !== 5 ? to3 : I_from2to3);
 			break;
 	}
@@ -860,20 +860,20 @@ function rotate_right() {
 
 function rotate_left() {
 	moved_mino = left_rotated();
-	switch (true) {
-		case moved_direction === 0:
+	switch (moved_direction) {
+		case 0:
 			SRScheck(nowmino_number !== 5 ? from1to0 : I_from1to0);
 			break;
 
-		case moved_direction === 1:
+		case 1:
 			SRScheck(nowmino_number !== 5 ? to1 : I_from2to1);
 			break;
 
-		case moved_direction === 2:
+		case 2:
 			SRScheck(nowmino_number !== 5 ? from3to2 : I_from3to2);
 			break;
 
-		case moved_direction === 3:
+		case 3:
 			SRScheck(nowmino_number !== 5 ? to3 : I_from0to3);
 			break;
 	}
