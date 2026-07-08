@@ -718,14 +718,14 @@ function humen_master(humen) {
 	const audio = document.getElementById('BGM');
 	audio.src = `./scores/${humen.wave}`;
 
-	scrolling = setInterval(drop_mino, (15 / BPM) * 1000);
+	loop = setTimeout(drop_mino, (15 / BPM) * 1000);
 
 	if (humen.offset > 0) {
 		audio.play();
-		setTimeout(() => run_score(humen, measure), (humen.offset - 270 / BPM) * 1000);
+		loop = setTimeout(() => run_score(humen, measure), (humen.offset - 270 / BPM) * 1000);
 	} else {
 		run_score(humen, measure);
-		setTimeout(() => audio.play(), (humen.offset + 270 / BPM) * 1000);
+		loop = setTimeout(() => audio.play(), (humen.offset + 270 / BPM) * 1000);
 	}
 }
 
@@ -744,9 +744,9 @@ function run_score(humen, measure) {
 	generate_notes(nowmeasure, time, (interval * 4) / nowmeasure.score.length);
 	measure++;
 	if (measure < humen.scores.length) {
-		setTimeout(() => run_score(humen, measure), interval * 4);
+		loop = setTimeout(() => run_score(humen, measure), interval * 4);
 	} else {
-		setTimeout(() => clearTimeout(scrolling), interval * 12);
+		loop = setTimeout(() => clearTimeout(scrolling), interval * 12);
 	}
 }
 
@@ -760,7 +760,7 @@ function generate_notes(measure, time, interval) {
 	});
 	time++;
 	if (time < measure.score.length) {
-		setTimeout(() => generate_notes(measure, time, interval), interval);
+		loop = setTimeout(() => generate_notes(measure, time, interval), interval);
 	}
 }
 
@@ -796,7 +796,6 @@ const SRScheck = (SRS_list) => {
 async function KONAMIchange() {
 	score = 0;
 	KONAMImode = Math.floor(Math.random() * 8) + 1;
-	KONAMImode = 8;
 	// 9は未完成
 
 	switch (KONAMImode) {
@@ -824,7 +823,7 @@ async function KONAMIchange() {
 			break;
 	}
 	KONAMIcount = 4;
-	clearInterval(loop);
+	clearTimeout(loop);
 	init();
 }
 
@@ -849,8 +848,6 @@ function rotate_right() {
 	}
 
 	if (!can_move(0, 2, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
-		clearInterval(loop);
-		loop = setInterval(drop_mino, dropping_speed);
 		cannotmove_counter++;
 	} else {
 		cannotmove_counter = 0;
@@ -878,8 +875,6 @@ function rotate_left() {
 	}
 
 	if (!can_move(0, 2, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
-		clearInterval(loop);
-		loop = setInterval(drop_mino, dropping_speed);
 		cannotmove_counter++;
 	} else {
 		cannotmove_counter = 0;
@@ -891,7 +886,7 @@ document.onkeydown = (e) => {
 	if (pause) {
 		if (e.code === 'KeyC') {
 			pause = false;
-			loop = setInterval(drop_mino, dropping_speed);
+			dropping_mino();
 		}
 	} else {
 		if (gameover && e.code === 'Enter') {
@@ -902,7 +897,7 @@ document.onkeydown = (e) => {
 			if (!gameover) {
 				switch (e.code) {
 					case 'KeyC':
-						clearInterval(loop);
+						clearTimeout(loop);
 						pause = true;
 						break;
 
@@ -914,8 +909,6 @@ document.onkeydown = (e) => {
 						}
 
 						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
-							clearInterval(loop);
-							loop = setInterval(drop_mino, dropping_speed);
 							cannotmove_counter++;
 						} else {
 							cannotmove_counter = 0;
@@ -930,8 +923,6 @@ document.onkeydown = (e) => {
 						}
 
 						if (!can_move(0, 1, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
-							clearInterval(loop);
-							loop = setInterval(drop_mino, dropping_speed);
 							cannotmove_counter++;
 						} else {
 							cannotmove_counter = 0;
@@ -944,8 +935,6 @@ document.onkeydown = (e) => {
 							score = score + 3;
 
 							if (!can_move(0, 2, nowmino) && cannotmove_counter < 20 && dropping_block.length === 0) {
-								clearInterval(loop);
-								loop = setInterval(drop_mino, dropping_speed);
 								cannotmove_counter++;
 							} else {
 								cannotmove_counter = 0;
@@ -967,9 +956,8 @@ document.onkeydown = (e) => {
 							mino_distanceY++;
 							score = score + 8;
 						}
+						clearTimeout(loop);
 						drop_mino();
-						clearInterval(loop);
-						loop = setInterval(drop_mino, dropping_speed);
 						break;
 
 					case 'KeyX':
@@ -987,8 +975,6 @@ document.onkeydown = (e) => {
 							nowmino_number = KONAMImode !== 5 ? minos.findIndex((item) => item === nowmino) : 9;
 
 							if (!can_move(0, 2, nowmino) && cannotmove_counter < 20) {
-								clearInterval(loop);
-								loop = setInterval(drop_mino, dropping_speed);
 								cannotmove_counter++;
 							} else {
 								cannotmove_counter = 0;
@@ -1077,8 +1063,6 @@ const clear_line_check = () => {
 		score = score + Math.floor(scores[clear_line_count - 1] * 1 + ren / 10);
 		clearedline = clearedline + clear_line_count;
 		dropping_speed = Math.max(100, 500 - clearedline * 10);
-		clearInterval(loop);
-		loop = setInterval(drop_mino, dropping_speed);
 
 		if (perfect) {
 			score = score + 3000;
@@ -1121,7 +1105,7 @@ function repopping() {
 	// 次のミノを出せなくなったらゲームオーバー
 	if (!can_move(0, 0, nowmino)) {
 		gameover = true;
-		clearInterval(loop);
+		clearTimeout(loop);
 		if (highscore < score && !KONAMImode) {
 			localStorage.setItem('highscore', score);
 			highscore = score;
@@ -1316,8 +1300,6 @@ const drop_mino = () => {
 				ren = 0;
 
 				dropping_speed = Math.max(100, 500 - clearedline * 10);
-				clearInterval(loop);
-				loop = setInterval(drop_mino, dropping_speed);
 			}
 		}
 	}
@@ -1327,6 +1309,7 @@ const drop_mino = () => {
 	} else {
 		draw_playscreen(false);
 	}
+	if (!gameover) loop = setTimeout(drop_mino, dropping_speed);
 };
 
 // 初期化
@@ -1373,7 +1356,7 @@ const init = () => {
 
 	if (KONAMImode !== 9) {
 		repop();
-		loop = setInterval(drop_mino, dropping_speed);
+		drop_mino();
 		create_mino_position();
 		draw_playscreen(dropping_block.length !== 0);
 	}
