@@ -41,7 +41,7 @@ let moved_minoColor = null;
 let loop;
 let score = 0;
 let clearedline = 0;
-let highscore = localStorage.getItem('highscore') ?? 0;
+let highscore = 0;
 let nowmino;
 let nowmino_color;
 let holdmino;
@@ -69,7 +69,7 @@ let pause = false;
 let cannotmove_counter = 0;
 let justdropped = [];
 let inputs = [];
-let KONAMImode = false;
+let KONAMImode = 0;
 let KONAMIcount = 0;
 let dropping_block = [];
 let puyogroups = [];
@@ -635,7 +635,7 @@ const freeze_mino = () => {
 		}
 	}
 
-	if (KONAMImode == 2) wall_upper(1);
+	if (KONAMImode === 2) wall_upper(1);
 };
 
 const create_mino_position = () => {
@@ -797,7 +797,6 @@ async function KONAMIchange() {
 	score = 0;
 
 	const input = Number(new URL(document.location.href).searchParams.get('KONAMI'));
-	console.log(input);
 
 	KONAMImode = 0 < input && input < 9 ? input : Math.floor(Math.random() * 8) + 1;
 	// 9は未完成
@@ -895,7 +894,7 @@ document.onkeydown = (e) => {
 	} else {
 		if (gameover && e.code === 'Enter') {
 			gameover = false;
-			KONAMImode = false;
+			KONAMImode = 0;
 			init();
 		} else {
 			if (!gameover) {
@@ -1003,7 +1002,7 @@ document.onkeydown = (e) => {
 						break;
 				}
 
-				if (inputs.length < 10 && !KONAMImode) {
+				if (inputs.length < 10 && KONAMImode === 0) {
 					inputs.push(e.code);
 				}
 
@@ -1126,8 +1125,8 @@ function repopping() {
 	if (!can_move(0, 0, nowmino)) {
 		gameover = true;
 		clearTimeout(loop);
-		if (highscore < score && !KONAMImode) {
-			localStorage.setItem('highscore', score);
+		if (highscore < score) {
+			localStorage.setItem(String(KONAMImode), score);
 			highscore = score;
 		}
 	}
@@ -1175,6 +1174,7 @@ function make_puyogroups() {
 
 // 落下処理
 const drop_mino = () => {
+	console.log(KONAMImode);
 	if (dropping_block.length === 0 && KONAMImode !== 9) {
 		if (can_move(0, 1, nowmino)) {
 			mino_distanceY++;
@@ -1248,7 +1248,6 @@ const drop_mino = () => {
 			}
 		}
 	} else {
-		console.log(puyogroups);
 		const dealing_puyos = dropping_block.splice(0);
 		const numofdrops = dealing_puyos.length;
 		let cleared = false;
@@ -1357,6 +1356,8 @@ const init = () => {
 	}
 
 	score = 0;
+	localStorage.removeItem('highscore');
+	highscore = Number(localStorage.getItem(String(KONAMImode))) || 0;
 	clearedline = 0;
 	bag = default_bag.slice();
 	nexts = [];
