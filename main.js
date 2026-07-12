@@ -648,8 +648,8 @@ function random_mino() {
 	for (let i = 0; i < max_size; i++) {
 		result[i] = [];
 		for (let j = 0; j < max_size; j++) {
-			const data = Math.floor(Math.random() * 3);
-			if (data < 2) {
+			const r = Math.floor(Math.random() * 3);
+			if (r < 2) {
 				result[i][j] = 0;
 			} else {
 				result[i][j] = 1;
@@ -657,9 +657,11 @@ function random_mino() {
 		}
 	}
 
+	const hasBlock = result.some((row) => row.some((cell) => cell === 1));
+
 	result[4] = random_color();
 
-	return result;
+	return hasBlock ? result : random_mino();
 }
 
 function random_color() {
